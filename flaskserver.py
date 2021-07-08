@@ -65,7 +65,6 @@ def before_request():
 def login():
     argsnext = urllib.parse.quote(request.args.get('next')) if request.args.get('next') else url_for('index')
     nexturl = url_for('authorized', _external=True) + "?next={}".format(argsnext)
-    # pdb.set_trace()
     return github.authorize(scope="repo", redirect_uri=nexturl)
 
 @app.route('/logout')
@@ -78,7 +77,6 @@ def logout():
 def authorized(oauth_token):
     if oauth_token is None:
         #flash("Authorization failed.")
-        print ("Authorization failed")
         return render_template('error.html')
         #return redirect(next_url)
     session['user_token'] = oauth_token
