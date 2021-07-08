@@ -161,7 +161,7 @@ def createimage():
     image = anno.Image(request.form, request.files, session['origin_url'])
 
     if not image.isimage:
-        response = sendgithubrequest("manifest.json", image.manifest, image.manifestpath).json()
+        response = sendgithubrequest("manifest.json", image.manifest_markdown, image.manifestpath).json()
         uploadtype = 'manifest'
         if 'content' in response.keys():
             uploadurl ='{}{}'.format(image.origin_url, response['content']['path'].replace('_manifest', 'manifest'))

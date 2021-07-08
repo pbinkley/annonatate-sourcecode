@@ -28,13 +28,15 @@ class Image:
                 self.template_name = 'upload.html'
                 self.template_vars = {'error': self.manifest['error']}
             else:
-                self.manifest = self.manifest.toString(compact=False).replace('canvas/info.json', 'info.json').replace('https://{{site.url}}', '{{site.url}}')
-            self.manifest = "---\n---\n{}".format(self.manifest)
+                # pb: previously self.manifest was overwritten with the string version, but for testing we need the json version
+                self.manifest_markdown = self.manifest.toString(compact=False).replace('canvas/info.json', 'info.json').replace('https://{{site.url}}', '{{site.url}}')
+            self.manifest_markdown = "---\n---\n{}".format(self.manifest_markdown)
         else:
             # handle uploaded image
             self.file = request_files['file']
             self.encodedimage = self.file.stream.read()
 
+# pb: not used?
 def createjekyllfile(contents, filename, iiifpath):
     jekyllstring = "---\n---\n{}".format(contents)
     with open(os.path.join(iiifpath, filename), 'w') as file:
