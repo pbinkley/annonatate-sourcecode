@@ -7,12 +7,13 @@ from iiif_prezi.factory import ManifestFactory
 import requests
 
 class Image:
-    def __init__(self, request, session):
-        self.iiifimage = request.form['upload'] # might be 'uploadimage', or a url
+    def __init__(self, request_form, request_files, origin_url):
+        self.iiifimage = request_form['upload'] # might be 'uploadimage', or a url
         self.uploadurl = False
         self.isimage = bool(re.match("^upload(iiif|image)$", self.iiifimage.strip()))
-        self.origin_url = session['origin_url']
-        self.request_form = request.form
+        self.origin_url = origin_url
+        self.request_form = request_form
+        self.request_files = request_files
 
         if not self.isimage:
             # handle uploaded external url
@@ -31,7 +32,7 @@ class Image:
             self.manifest = "---\n---\n{}".format(self.manifest)
         else:
             # handle uploaded image
-            self.file = request.files['file']
+            self.file = request_files['file']
             self.encodedimage = self.file.stream.read()
 
 def createjekyllfile(contents, filename, iiifpath):

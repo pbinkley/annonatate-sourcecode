@@ -158,7 +158,7 @@ def removecollaborator():
 
 @app.route('/createimage', methods=['POST', 'GET'])
 def createimage():
-    image = anno.Image(request, session)
+    image = anno.Image(request.form, request.files, session['origin_url'])
 
     if not image.isimage:
         response = sendgithubrequest("manifest.json", image.manifest, image.manifestpath).json()
