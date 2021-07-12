@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import re
-import pdb
 from iiif_prezi.factory import ManifestFactory
 import requests
+
+import pdb
 
 class Image:
     def __init__(self, request_form, request_files, origin_url):
@@ -36,12 +37,6 @@ class Image:
             self.file = request_files['file']
             self.encodedimage = self.file.stream.read()
 
-# pb: not used?
-def createjekyllfile(contents, filename, iiifpath):
-    jekyllstring = "---\n---\n{}".format(contents)
-    with open(os.path.join(iiifpath, filename), 'w') as file:
-        file.write(jekyllstring)
-
 def createmanifest(tmpfilepath, imgurl, url, iiiffolder, formdata, manifesturl):
     try:
         fac = ManifestFactory()
@@ -54,11 +49,11 @@ def createmanifest(tmpfilepath, imgurl, url, iiiffolder, formdata, manifesturl):
         manifest.set_metadata({"rights": formdata['rights']})
         seq = manifest.sequence()
         cvs = seq.canvas(ident='info', label=formdata['label'])
-        anno = cvs.annotation()
+        anno_id = "{}{}/info.json".format(imgurl, iiiffolder)
+        anno = cvs.annotation(ident='anno-id')
         img = anno.image(iiiffolder, iiif=True)
     except Exception as e:
         return {'error': e}
-
     if tmpfilepath:
         img.set_hw_from_file(tmpfilepath)
     else:
@@ -83,3 +78,10 @@ def createmanifest(tmpfilepath, imgurl, url, iiiffolder, formdata, manifesturl):
     cvs.height = img.height
     cvs.width = img.width
     return manifest
+
+# pb: not used?
+def createjekyllfile(contents, filename, iiifpath):
+    jekyllstring = "---\n---\n{}".format(contents)
+    with open(os.path.join(iiifpath, filename), 'w') as file:
+        file.write(jekyllstring)
+
