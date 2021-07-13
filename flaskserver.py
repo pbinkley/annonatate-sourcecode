@@ -10,7 +10,6 @@ from flask_cors import CORS
 import json, os, glob, requests
 import base64
 from settings import *
-from bs4 import BeautifulSoup
 import yaml, time
 import re
 import string, random
@@ -429,7 +428,7 @@ def acceptinvite():
 
 @app.route('/search')
 def search():
-    search = anno.Search(request.args, session)
+    search = anno.Search(request.args, session['annotations'])
 
     if request.args.get('format') == 'json':
         return jsonify(search.items), 200

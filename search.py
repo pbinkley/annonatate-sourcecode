@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import os
+from bs4 import BeautifulSoup
 
 import pdb
 
 class Search:
-    def __init__(self, request_args, session):
+    def __init__(self, request_args, annotations):
         self.request_args = request_args
-        self.session = session
+        self.annotations = annotations
         self.query = self.request_args.get('q')
         self.allcontent = self.querysearch(self.query)
         self.tags = self.request_args.get('tag')
@@ -31,7 +32,7 @@ class Search:
         facets = {}
         items = []
         fieldvalue = fieldvalue if fieldvalue else ''
-        for item in self.session['annotations']:
+        for item in self.annotations:
             if '-list.json' not in item['filename']:
                 results = self.get_search(item['json'])
                 if fieldvalue.lower() in " ".join(list(results['searchfields'].values())).lower():
@@ -45,7 +46,7 @@ class Search:
         for anno in content:
             if fieldvalue in anno['facets'][field]:
                 items.append(anno)
-                facets = mergeDict(facets, anno['facets'])
+                facets = self.mergeDict(facets, anno['facets'])
         return {'items': items, 'facets': facets}
 
 
