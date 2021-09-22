@@ -81,8 +81,10 @@ def addAnnotationList(manifest, session):
         originurl = session['origin_url']
         print("originurl: " + originurl)
         print("manifest: " + manifest)
-        cleanmanifest = manifest.replace("{{ '/' | absolute_url }}", originurl)
-        cleanmanifest = json.loads(cleanmanifest)
+        #cleanmanifest = manifest.replace("{{ '/' | absolute_url }}", originurl)
+        #cleanmanifest = json.loads(cleanmanifest)
+        #cleanmanifest = json.loads(manifest)
+        cleanmanifest = manifest
         print("cleanmanifest: " + cleanmanifest)
         manifest = parseManifest(cleanmanifest)
         print("Parsed manifest")
