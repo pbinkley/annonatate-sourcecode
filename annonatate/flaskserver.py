@@ -592,6 +592,7 @@ def triggerbuild(url=False):
 # Get user info from GitHub user api, get all repos user has access to.
 # If no workspaces, fork Annnonatate repo, enable pages
 def populateuserinfo():
+    print('Populating user info')
     workspaces = {}
     userinfo = github.get(githubuserapi)
     firstbuild = False
@@ -863,15 +864,24 @@ def writetogithub(filename, annotation, order):
 # If the manifest for the annotation is an uploaded manifest, write the annotation page to the manifest
 # If the manifest is not the same as the content requested, write to GitHub
 def createlistpage(canvas, manifest):
+    print('Creating list page')
     filenameforlist = listfilename(canvas)
     filename = os.path.join(session['defaults']['annotations'], filenameforlist)
+    print('List: ' + filename)
     text = '---\ncanvas_id: "' + canvas + '"\n---\n{% assign annotations = site.annotations | where: "canvas", page.canvas_id | sort: "order" | map: "content" %}\n{\n"@context": "http://iiif.io/api/presentation/2/context.json",\n"id": "{{ site.url }}{{ site.baseurl }}{{page.url}}",\n"type": "AnnotationPage",\n"items": [{{ annotations | join: ","}}] }'
     github.sendgithubrequest(session, filename, text)
+    print('manifest: ' + manifest)
+    print('session manifests: ' + '|'.join(session['upload']['manifests']))
     if manifest in session['upload']['manifests']:
+        print('Handling manifest')
         response = requests.get(manifest).json()
+        print('response: ' + json.dumps(response))
         manifestwithlist = addAnnotationList(json.dumps(response), session)
         manifestfilename = manifest.replace(session['origin_url'], '')
+        print('manifestfilename: ' + manifestfilename)
+        print('manifestwithlist: ' + json.dumps(manifestwithlist))
         if json.loads(manifestwithlist) != response:
+            print('Processing')
             manifestwithlist = '---\nlayout: none\n---\n' + manifestwithlist.replace(session['origin_url'], "{{ '/' | absolute_url }}")
             response = github.sendgithubrequest(session, manifestfilename, manifestwithlist)
             print(response.content)
