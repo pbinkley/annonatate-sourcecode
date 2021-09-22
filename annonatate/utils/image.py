@@ -75,19 +75,31 @@ class Image:
 
 
 def addAnnotationList(manifest, session):
+    print("addAnnotationList")
     try:
+        print("try")
         originurl = session['origin_url']
+        print("originurl: " + originurl)
+        print("manifest: " + manifest)
         cleanmanifest = manifest.replace("{{ '/' | absolute_url }}", originurl)
         cleanmanifest = json.loads(cleanmanifest)
+        print("cleanmanifest: " + cleanmanifest)
         manifest = parseManifest(cleanmanifest)
+        print("Parsed manifest")
         for canvas in manifest.sequences[0].canvases:
+            print("canvas: " + canvas.id)
             annotationlist = pathjoin(originurl, session['defaults']['annotations'].strip('_'), listfilename(canvas.id))
+            print("annotationlist: " + annotationlist)
             othercontentids = list(map(lambda x: x.id, canvas.otherContent))
+            print("othercontentids: " + '|'.join(othercontentids))
             if annotationlist not in othercontentids:
+                print("Adding annotationlist")
                 canvas.annotationList(annotationlist)
         stringmanifest = manifest.toString(compact=False)
     except:
+        print("except")
         try:
+            print("try 2")
             manifest = read_API3_json_dict(json.loads(manifest))
             for item in manifest.items:
                 annotations = list(map(lambda x: x['id'], item.annotations)) if item.annotations else []
@@ -102,7 +114,9 @@ def addAnnotationList(manifest, session):
 
 def parseManifest(manifest):
     reader = ManifestReader(manifest)
+    print("Parsing manifest")
     manifest = reader.read()
+    print("Manifest parsed")
     return manifest
         
 def listfilename(canvas):
