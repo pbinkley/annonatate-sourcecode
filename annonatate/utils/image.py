@@ -98,8 +98,9 @@ def addAnnotationList(manifest, session):
                 print("Adding annotationlist")
                 canvas.annotationList(annotationlist)
         stringmanifest = manifest.toString(compact=False)
-    except:
+    except Exception as e:
         print("except")
+        print(e)
         try:
             print("try 2")
             manifest = read_API3_json_dict(json.loads(manifest))
