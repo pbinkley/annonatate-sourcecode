@@ -10,4 +10,5 @@ iiif-prezi
 pyyaml
 iiif
 gunicorn
-git+https://github.com/giacomomarchioro/pyIIIFpres
+python-dotenv
+
